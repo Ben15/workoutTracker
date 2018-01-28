@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WorkoutTracker 2.0</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+
+
+  </head>
+  <body>
+<!--this is the create new exercise wrapper-->
+
+
+    <h1>Workout Tracker</h1>
+    <p>Add an exercise to get started</p>
+    <button type="button" name="button" id="addExercise" >Add Exercise</button>
+    <button type="button" name="button" id="saveExercise" >Save Workout</button>
+
+
+<!--this is the create new exercise wrapper-->
+  <div id="newExerciseInputWrapper" class="visible">
+    <div id=exerciseNameInputWrapper >
+      <input type="text" name="" value="" id="exerciseNameInput">
+    </div>
+    <button type="button" name="button" id="exerciseNameDoneBtn">Done</button>
+
+
+    <div id="exerciseContainer">
+    <!--this is where all the exercises go-->
+    </div>
+
+    <div id="workoutHistory">
+      <h2>Workout History</h2>
+    <!--This is where all past exercises will go-->
+      <p class="noHistory hidden">You have no past exercises</p>
+      <div class="workoutHistoryContainer">
+
+      </div>
+    </div>
+
+
+  
+    <script src="script.js" ></script>
+  </body>
+</html>

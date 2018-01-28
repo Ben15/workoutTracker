@@ -1,0 +1,15 @@
+<div class="workout">
+  <h4 class="workoutId">${workout.workoutId}</h4>
+  <h4 class="workoutDate">${workout.workoutDate}</h4>
+  <h4 class="workoutExerciseNumber">You did ${workout.exercises.length} exercises</h4>
+
+
+
+  <ul class="exerciseName">
+    ${workout.map(function(workout,i){
+      return `<li>Name${workout.exercises[i].exerciseName}</li>`
+
+    })}
+  </ul>
+
+</div>

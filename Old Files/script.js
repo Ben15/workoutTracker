@@ -389,22 +389,7 @@ getWorkoutsFromLocalStorage()
 // ------------- Workout Object -------------
 
 var workout = {
-  //   exercise array
-  exercises:[
-    // //   exercise object
-    // {
-    // exerciseName: '',
-    // //   sets array
-    // sets:[{
-    //     setNumber:'',
-    //     reps:0,
-    //     weight:0,
-    //     completed: false
-    //   }],
-    // exerciseId:''
-    // }
-
-  ],
+,
 }
 
 

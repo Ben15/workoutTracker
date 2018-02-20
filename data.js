@@ -18,6 +18,7 @@ let workouts = [
 
 
 
+let exerciseOptions = ['Bicep Curl', 'Shoulder Press', 'Chest Press','Dumbell Fly','Squat', 'Deadlift']
 
 
 ]

@@ -13,3 +13,76 @@
   </ul>
 
 </div>
+
+
+
+
+
+
+<!-- Exercise Container -->
+<div class="row">
+  <div class="col s12 exerciseContainer">
+    <div class="row valign-wrapper">
+      <div class="col s11 ">
+        <h5 class="exerciseName">Exercise Name</h5>
+      </div>
+      <div class="col s1"><a href=""><i class="material-icons">delete</i></a></div>
+    </div>
+    <!-- Sets and Reps Heading -->
+    <table>
+        <thead>
+          <th>Reps</th>
+          <th>Weight (kg)</th>
+          <th>Completed</th>
+          <th>Delete Set</th>
+        </thead>
+        <!-- Set Container -->
+        <tbody class="setContainer">
+        <tr class="set">
+          <td>
+            <div class="input-field rep">
+              <input placeholder="Reps" id="first_name" type="text" class="validate">
+            </div>
+          </td>
+          <td>
+            <div class="input-field rep">
+              <input placeholder="Weight" id="first_name" type="text" class="validate">
+            </div>
+          </td>
+          <td>
+            <input type="checkbox" class="filled-in" id="filled-in-box"  />
+            <label for="filled-in-box">Completed</label>
+          </td>
+          <td>
+            <a href="" class="">
+              <i class="material-icons right">delete</i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col s12 setContainer">
+
+  <div class="col s6">
+    <a class="waves-effect waves-light btn"><i class="material-icons left">add</i>Add Set</a>
+  </div>
+  <div class="col s6">
+    <a class="waves-effect waves-light btn"><i class="material-icons left">add</i>New Exercise</a>
+  </div>
+
+  </div>
+</div>
+
+
+
+<!-- Exercise Input -->
+<div class="input-field col s6">
+  <select id="exerciseOptions">
+    <option value="" disabled selected>Choose an exercise</option>
+    <option value="1">Bicep Curl</option>
+    <option value="2">Option 2</option>
+    <option value="3">Option 3</option>
+  </select>
+  <label>Exercise List</label>
+</div>

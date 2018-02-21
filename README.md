@@ -5,4 +5,4 @@ A javascript workout tracker
 
 Next on todo list.
 
-Get options in select element to create an exercise module then close the exercise options input 
+Hook up individual exercises to the data model

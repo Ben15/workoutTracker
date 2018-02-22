@@ -5,4 +5,4 @@ A javascript workout tracker
 
 Next on todo list.
 
-Hook up individual exercises to the data model
+Remove sets from exercise data

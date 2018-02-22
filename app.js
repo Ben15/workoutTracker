@@ -18,7 +18,9 @@ class UI {
 
 
   createNewExercise(exerciseName){
-    let content = `<div class="row">
+    let divRow = document.createElement('div')
+    divRow.classList.add('row')
+    let content = `
       <div class="col s12 exerciseContainer">
         <div class="row valign-wrapper">
           <div class="col s11 ">
@@ -36,39 +38,21 @@ class UI {
             </thead>
             <!-- Set Container -->
             <tbody class="setContainer">
-            <tr class="set">
-              <td>
-                <div class="input-field rep">
-                  <input placeholder="Reps" id="first_name" type="number" class="validate">
-                </div>
-              </td>
-              <td>
-                <div class="input-field rep">
-                  <input placeholder="Weight" id="first_name" type="number" class="validate">
-                </div>
-              </td>
-              <td>
-                <input type="checkbox" class="filled-in" id="filled-in-box"  />
-                <label for="filled-in-box">Completed</label>
-              </td>
-              <td>
-
-                  <i id="deleteBtn" class="material-icons right">delete</i>
-
-              </td>
-            </tr>
-          </tbody>
+            </tbody>
         </table>
       </div>
       <div class="col s12 setContainer">
         <div class="col s6 offset-s3 center-align">
           <a id="addSetBtn" class="blue-text text-darken-2 waves-effect waves-blue btn-flat "><i class="material-icons left">add</i>Add Set</a>
         </div>
-      </div>
-    </div>`
-    this.exercisesContainer.insertAdjacentHTML('beforeend', content)
+      </div>`
+
+    divRow.innerHTML = content
+    this.exercisesContainer.appendChild(divRow)
     this.exerciseOptions.parentNode.parentNode.classList.remove('visible')
     this.exerciseOptions.parentNode.parentNode.classList.add('hidden')
+    workoutController.addExerciseToData(exerciseName, divRow)
+
   }
 
 
@@ -76,7 +60,6 @@ class UI {
     if(e.target.id === 'addSetBtn'){
       let specificExercise = e.target.parentNode.parentNode.parentNode.querySelector('.exerciseContainer')
       let setContainer = specificExercise.querySelector('.setContainer')
-      console.log(setContainer);
       let setContent = `
         <tr class="set">
           <td>
@@ -101,6 +84,23 @@ class UI {
         </tr>`
 
         setContainer.insertAdjacentHTML('beforeend', setContent)
+        // Add to data
+        let workoutObject = workoutController.showWorkoutData()[0]
+        let set = new Set
+        let setsLength = e.target.parentNode.parentNode.parentNode.querySelectorAll('.set').length
+        // debugger
+        // FIXME (CANNOT UNDERSTAND WHY setsLength cannot be accessed within the map function)
+        console.log(setsLength);
+        workoutObject.exercises.map((exercise) => {
+            if(e.target.parentNode.parentNode.parentNode.dataset.id === exercise.exerciseId){
+                set.setPosition = e.target.parentNode.parentNode.parentNode.querySelectorAll('.set').length - 1
+                exercise.sets.push(set)
+            }
+        })
+
+
+
+
     }
   }
 
@@ -122,15 +122,48 @@ class UI {
   }
 
   removeExercise(e){
+// see if it's the removeExerciseBtn
     if(e.target.id === 'removeExerciseBtn'){
-      let removeExerciseIcon = e.target
-      let exerciseContainer = removeExerciseIcon.parentNode.parentNode.parentNode.parentNode.remove()
+      // loop through data exercises array to find if the dom element matches the exercise in data
+      workoutController.showWorkoutData()[0].exercises.map((exercise, index)=>{
+        if(exercise.exerciseId === e.target.parentNode.parentNode.parentNode.parentNode.dataset.id){
+          // remove exercise from the data object
+          workoutController.showWorkoutData()[0].exercises.splice(index,1)
+          // remove exercise from the dom
+          let removeExerciseIcon = e.target
+          let exerciseContainer = removeExerciseIcon.parentNode.parentNode.parentNode.parentNode.remove()
+        }
+      })
     }
+    console.log(workoutController.showWorkoutData());
   }
 
 
 }
 ui = new UI()
+
+// Workout Classes
+
+class Exercise {
+
+  constructor(exerciseName){
+    this.exerciseName = exerciseName
+    this.exerciseId = util.uuid()
+    this.sets = []
+  }
+
+}
+
+class Set {
+
+  constructor(position){
+    this.setPosition= position
+    this.reps=0
+    this.weight=0
+    this.completed=false
+  }
+
+}
 
 // Functions
 
@@ -157,9 +190,8 @@ console.log('Click');
 e.preventDefault()
 }
 
-function changeEventHandler(e) {
+function addExercise(e) {
     ui.createNewExercise(e.target.value)
-
 }
 
 
@@ -173,15 +205,10 @@ function changeEventHandler(e) {
 ui.workoutNameInput.addEventListener('keyup', setWorkoutName)
 // Add exercise Button
 ui.addExerciseBtn.addEventListener('click', exerciseOptions)
-
 //  Exercise Options
 document.addEventListener('DOMContentLoaded',function() {
-    ui.exerciseOptions.onchange=changeEventHandler;
+  ui.exerciseOptions.onchange=addExercise;
 },false);
-
-// ui.exerciseOptions.addEventListener('change', function(e){
-//   console.log('Change');
-// })
 // addSet
 document.addEventListener('click', ui.addSet)
 // removeSet
@@ -193,9 +220,7 @@ document.addEventListener('click', ui.removeExercise)
 
 // Util
 const util = (()=>{
-
 return {
-
   uuid: function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -203,7 +228,6 @@ return {
     });
   }
 }
-
 })()
 
 
@@ -237,7 +261,7 @@ const workoutController = (()=>{
 
   }
 
-  let exerciseOptions = ['Bicep Curl', 'Shoulder Press', 'Chest Press','Dumbell Fly','Squat', 'Deadlift']
+  let exerciseOptions = ['Bicep Curl', 'Shoulder Press', 'Chest Press','Dumbell Fly','Squat', 'Deadlift', 'Row']
 
 
 
@@ -249,8 +273,9 @@ const workoutController = (()=>{
     data.workouts[0].workoutName = name
   },
 
-  logWorkoutData: () => {
+  showWorkoutData: () => {
     console.log(data.workouts[0]);
+    return data.workouts
   },
   showExercises: () => {
     return exerciseOptions
@@ -267,7 +292,15 @@ const workoutController = (()=>{
       `
     } )
     ui.exerciseOptions.insertAdjacentHTML('beforeend',content)
-  }
+  },
+  addExerciseToData: (exerciseName, exerciseElement) => {
+    // create object
+    let exercise = new Exercise
+    exercise.exerciseName = exerciseName
+    data.workouts[0].exercises.push(exercise)
+
+    exerciseElement.dataset.id = exercise.exerciseId
+  },
 
   }
 
@@ -276,9 +309,11 @@ const workoutController = (()=>{
 
 // Init
 const init = (()=>{
+    // Create workout Id
     workoutController.createWorkoutId()
+    // Add exercise list to exercise options
     workoutController.addExerciseOptions(workoutController.showExercises())
-
+    // Workout name initial
 
 
 

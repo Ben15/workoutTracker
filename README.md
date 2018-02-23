@@ -5,4 +5,4 @@ A javascript workout tracker
 
 Next on todo list.
 
-Remove sets from exercise data
+Get checkboxes working

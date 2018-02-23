@@ -61,15 +61,14 @@ class UI {
       let specificExercise = e.target.parentNode.parentNode.parentNode.querySelector('.exerciseContainer')
       let setContainer = specificExercise.querySelector('.setContainer')
       let setContent = `
-        <tr class="set">
           <td>
             <div class="input-field rep">
-              <input placeholder="Reps" id="first_name" type="number" class="validate">
+              <input placeholder="Reps" id="repInput" type="number" class="validate">
             </div>
           </td>
           <td>
-            <div class="input-field rep">
-              <input placeholder="Weight" id="first_name" type="number" class="validate">
+            <div class="input-field weight">
+              <input placeholder="Weight" id="weightInput" type="number" class="validate">
             </div>
           </td>
           <td>
@@ -81,9 +80,18 @@ class UI {
               <i id="deleteBtn" class="material-icons right">delete</i>
 
           </td>
-        </tr>`
+        `
 
-        setContainer.insertAdjacentHTML('beforeend', setContent)
+
+        // create individual set Container
+        let setWrapper = document.createElement('tr')
+        setWrapper.classList.add('set')
+
+        // insert setContent to set div
+        setWrapper.innerHTML = setContent
+
+
+        setContainer.appendChild(setWrapper)
         // Add to data
         let workoutObject = workoutController.showWorkoutData()[0]
         let set = new Set
@@ -91,9 +99,10 @@ class UI {
         // debugger
         // FIXME (CANNOT UNDERSTAND WHY setsLength cannot be accessed within the map function)
         console.log(setsLength);
-        workoutObject.exercises.map((exercise) => {
+        workoutObject.exercises.forEach((exercise) => {
             if(e.target.parentNode.parentNode.parentNode.dataset.id === exercise.exerciseId){
                 set.setPosition = e.target.parentNode.parentNode.parentNode.querySelectorAll('.set').length - 1
+                setWrapper.dataset.id = set.setId
                 exercise.sets.push(set)
             }
         })
@@ -104,13 +113,36 @@ class UI {
     }
   }
 
+  addSetData(e){
+
+    let setId = e.target.parentNode.parentNode.parentNode.dataset.id
+    if (e.target.id === 'weightInput'){
+      let weightInput = e.target.value
+      workoutController.addSetValuesToData(weightInput, undefined, setId)
+    } else if(e.target.id === 'repInput'){
+      let repInput = e.target.value
+      workoutController.addSetValuesToData(undefined, repInput, setId)
+    }
+  }
+
   removeSet(e){
     if(e.target.id === 'deleteBtn'){
 
+      // Loop through sets array of current exercise
+      let workoutObject = workoutController.showWorkoutData()[0]
+      workoutObject.exercises.forEach((exercise) => {
+          if(e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.dataset.id === exercise.exerciseId){
+            exercise.sets.map((set,index)=>{
+              if(e.target.parentNode.parentNode.dataset.id === set.setId){
+                exercise.sets.splice(index,1)
+              }
+            })
+
+          }
+      })
       let numberOfSets = e.target.parentNode.parentNode.parentNode.querySelectorAll('.set').length
       // console.log()
       if( numberOfSets === 1){
-
         let addSetBtn = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('#addSetBtn')
         console.log(addSetBtn);
         addSetBtn.style.marginTop = '30px'
@@ -123,9 +155,10 @@ class UI {
 
   removeExercise(e){
 // see if it's the removeExerciseBtn
+
     if(e.target.id === 'removeExerciseBtn'){
       // loop through data exercises array to find if the dom element matches the exercise in data
-      workoutController.showWorkoutData()[0].exercises.map((exercise, index)=>{
+      workoutController.showWorkoutData()[0].exercises.forEach((exercise, index)=>{
         if(exercise.exerciseId === e.target.parentNode.parentNode.parentNode.parentNode.dataset.id){
           // remove exercise from the data object
           workoutController.showWorkoutData()[0].exercises.splice(index,1)
@@ -158,6 +191,7 @@ class Set {
 
   constructor(position){
     this.setPosition= position
+    this.setId = util.uuid()
     this.reps=0
     this.weight=0
     this.completed=false
@@ -215,6 +249,8 @@ document.addEventListener('click', ui.addSet)
 document.addEventListener('click', ui.removeSet)
 // remove exercise
 document.addEventListener('click', ui.removeExercise)
+// set value change
+document.addEventListener('keyup', ui.addSetData )
 
 
 
@@ -247,13 +283,13 @@ const workoutController = (()=>{
       endTime:'',
       endDate:'',
       exercises:[
-        {
-          exerciseName:'',
-          exerciseId:'',
-          sets:[
-            { setNumber:'',reps:0, weight:0, completed: false }
-          ]
-        }
+        // {
+        //   exerciseName:'',
+        //   exerciseId:'',
+        //   sets:[
+        //     // { setNumber:'',reps:0, weight:0, completed: false }
+        //   ]
+        // }
       ]
     }
 
@@ -301,7 +337,27 @@ const workoutController = (()=>{
 
     exerciseElement.dataset.id = exercise.exerciseId
   },
+  addSetValuesToData:(weightInput, repInput, setId) => {
+    let currentWorkout = data.workouts[0]
+    // loop through all exercises
+    currentWorkout.exercises.forEach((exercise) => {
+      // loop through all sest of this exercise
+      exercise.sets.forEach((set)=>{
+        // if the data set.setId matches the passed in dom set Id from the dataset.id attribute
+        if(set.setId === setId){
+          // if weightInput is true
+          if(weightInput){
+          // set weightInput to the current set.weight value
+            set.weight = weightInput
+          } else if(repInput){
+          // set repInput to the current set.rep value
+            set.reps = repInput
+          }
+        }
+      })
 
+    })
+  }
   }
 
 })()
